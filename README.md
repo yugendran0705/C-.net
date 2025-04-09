@@ -27,3 +27,6 @@ To calculate the factorial of a number:
 1. Run the program.
 2. Enter a non-negative integer when prompted.
 3. View the calculated factorial displayed as output.
+
+---
+![alt text](image.png)
