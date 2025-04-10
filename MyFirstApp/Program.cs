@@ -1,44 +1,45 @@
-﻿using System;
-
-class Person
+﻿List<string> tasks = [];
+bool isRunning = true;
+Console.WriteLine("1. Add Task\n2. View Tasks\n3. Remove Task\n4. Exit");
+while (isRunning)
 {
-    string Name { get; set; }
-    int _age;
-    public int Age
+    Console.Write("Choose an option: ");
+    string choice = Console.ReadLine() ?? string.Empty;
+    switch (choice)
     {
-        get { return _age; }
-        set
-        {
-            if (value < 0)
+        case "1":
+            Console.Write("Enter task: ");
+            string task = Console.ReadLine() ?? string.Empty;
+            task = task.Trim();
+            task = char.ToUpper(task[0]) + task[1..];
+            tasks.Add(task);
+            break;
+        case "2":
+            Console.WriteLine("\nTasks:");
+            for (int i = 0; i < tasks.Count; i++)
             {
-                Console.WriteLine("Error: Age cannot be negative.");
+                Console.WriteLine($"{i + 1}. {tasks[i]}");
+            }
+            Console.WriteLine();
+            break;
+        case "3":
+            Console.Write("Enter task number to remove: ");
+            int taskNumber = Convert.ToInt32(Console.ReadLine()) - 1;
+            if (taskNumber >= 0 && taskNumber < tasks.Count)
+            {
+                tasks.RemoveAt(taskNumber);
+                Console.WriteLine("Task removed.");
             }
             else
             {
-                _age = value;
+                Console.WriteLine("Invalid task number.");
             }
-        }
-    }
-
-    public Person(string name, int age)
-    {
-        Name = name;
-        Age = age;
-    }
-    public void Introduce()
-    {
-        Console.WriteLine($"Hello, my name is {Name} and I am {Age} years old.");
-    }
-
-}
-class Program
-{
-    static void Main(string[] args){
-        Person person1 = new Person("Person 1", 21);
-        person1.Introduce();
-        Person person2 = new Person("Person 2", 21);
-        person2.Introduce();
-        Person person3 = new Person("Person 3", 20);
-        person3.Introduce();
+            break;
+        case "4":
+            isRunning = false;
+            break;
+        default:
+            Console.WriteLine("Invalid choice. Please try again.");
+            break;
     }
 }
