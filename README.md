@@ -1,11 +1,12 @@
 # C# & .net
 
-# Basic Collections and String Manipulation
+# Working with Collections and LINQ
 
-## Requirements
-- Write a program to manage a list of strings (e.g., names or tasks).
-- Use a List<string> to store items.
-- Allow the user to add, remove, and display items.
-- Utilize loops and basic string methods (like Trim(), ToUpper()) to process user input.
+- A student management console application.
+- Student class with properties such as Name, Grade, and Age.
+- Populate a collection (e.g., a List<Student>) with sample data.
+- Filter students who have a grade above a certain threshold.
+- Sort the filtered results by name or grade.
+- Display the filtered and sorted list.
 
 ![alt text](image.png)
