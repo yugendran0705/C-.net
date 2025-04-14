@@ -1,103 +1,62 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 
-namespace Task4
+namespace Task5
 {
-    class Student
-    {
-        public string Name { get; set; }
-        private int _age;
-        private string _grade;
-
-        public int Age
-        {
-            get { return _age; }
-            set
-            {
-                if (value < 0)
-                {
-                    throw new ArgumentException("Age cannot be negative.");
-                }
-                _age = value;
-            }
-        }
-        public string Grade
-        {
-            get { return _grade; }
-            set
-            {
-                HashSet<string> validGrades = new HashSet<string> { "A", "B", "C", "D", "E", "F" };
-                if (!validGrades.Contains(value))
-                {
-                    throw new ArgumentException("Invalid grade.");
-                }
-                _grade = value;
-            }
-        }
-
-        public Student(string name, int age, string grade)
-        {
-            Name = name;
-            Age = age;
-            Grade = grade;
-        }
-    }
-
     class Program
     {
         static void Main(string[] args)
         {
-            List<Student> students = new List<Student>();
+            string inputFilePath = "/home/yugendran-sunder/Documents/Presidio_Tasks/C#/MyFirstApp/input.txt";
+            string outputFilePath = "/home/yugendran-sunder/Documents/Presidio_Tasks/C#/MyFirstApp/output.txt";
 
             try
             {
-                students.Add(new Student("Alice", 20, "A"));
-                students.Add(new Student("Bob", 19, "B"));
-                students.Add(new Student("Charlie", 22, "C"));
-                students.Add(new Student("David", 21, "D"));
-                students.Add(new Student("Eve", 23, "E"));
-                students.Add(new Student("Frank", 24, "F"));
-
-                Console.Write("Enter Grade threshold:");
-                string threshold = Console.ReadLine();
-                if (!new HashSet<string> { "A", "B", "C", "D", "E", "F" }.Contains(threshold))
+                if (!File.Exists(inputFilePath))
                 {
-                    throw new ArgumentException("Invalid grade threshold.");
+                    throw new FileNotFoundException($"Input file '{inputFilePath}' not found.");
                 }
 
-                Console.Write("Enter Sort Choice 1.By name, 2.By Grade (1/2):");
-                string sortChoice = Console.ReadLine();
+                string fileContent = File.ReadAllText(inputFilePath);
+                int lineCount = CountLines(fileContent);
+                int wordCount = CountWords(fileContent);
 
-                IEnumerable<Student> filteredStudents;
+                string result = $"File Analysis Results:\n" +
+                              $"Total Lines: {lineCount}\n" +
+                              $"Total Words: {wordCount}\n";
 
-                if (sortChoice == "1")
-                {
-                    filteredStudents = students
-                        .Where(s => string.Compare(s.Grade, threshold) <= 0)
-                        .OrderBy(s => s.Name);
-                }
-                else if (sortChoice == "2")
-                {
-                    filteredStudents = students
-                        .Where(s => string.Compare(s.Grade, threshold) <= 0)
-                        .OrderBy(s => s.Grade);
-                }
-                else
-                {
-                    throw new ArgumentException("Invalid choice.");
-                }
+                
+                File.WriteAllText(outputFilePath, result);
 
-                Console.WriteLine("Filtered Students:");
-                foreach (var student in filteredStudents)
-                {
-                    Console.WriteLine($"{student.Name}, {student.Age}, {student.Grade}");
-                }
+                Console.WriteLine("File processing completed successfully!");
+                Console.WriteLine(result);
             }
-            catch (Exception ex)
+            catch (FileNotFoundException ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+            }
+        }
+
+        static int CountLines(string content)
+        {
+            if (string.IsNullOrEmpty(content))
+                return 0;
+
+            string[] lines = content.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            return lines.Length;
+        }
+
+        static int CountWords(string content)
+        {
+            if (string.IsNullOrEmpty(content))
+                return 0;
+
+            string[] words = content.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+            return words.Length;
         }
     }
 }

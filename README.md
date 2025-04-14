@@ -1,12 +1,11 @@
 # C# & .net
 
-# Working with Collections and LINQ
+# File I/O and Exception Handling
 
-- A student management console application.
-- Student class with properties such as Name, Grade, and Age.
-- Populate a collection (e.g., a List<Student>) with sample data.
-- Filter students who have a grade above a certain threshold.
-- Sort the filtered results by name or grade.
-- Display the filtered and sorted list.
+- An application that reads from and writes to files.
+- Read text from a file (e.g., a log file or a simple CSV).
+- Process the data (for example, count words or lines).
+- Write the result to a new file.
+- Implement exception handling to manage file-related errors (such as FileNotFoundException or IOException).
 
 ![alt text](image.png)
