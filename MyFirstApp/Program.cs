@@ -1,65 +1,55 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Task6
+namespace AsyncProgrammingDemo
 {
-    public delegate void ThresholdReachedEventHandler(int value);
-    public class Counter
-    {
-        private int _count; 
-        public int Threshold { get; set; } 
-
-        public event ThresholdReachedEventHandler ThresholdReached;
-
-        public void Increment()
-        {
-            _count++;
-            Console.WriteLine($"Counter: {_count}");
-
-            if (_count >= Threshold)
-            {
-                ThresholdReached?.Invoke(_count);
-            }
-        }
-    }
-
- 
-    public class EventHandlers
-    {
-        public void Alert(int value)
-        {
-            Console.WriteLine($"Alert! Threshold of {value} reached.");
-        }
-
-        public void Log(int value)
-        {
-            Console.WriteLine($"Logging: Threshold {value} reached.");
-        }
-    }
-
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Counter counter = new Counter { Threshold = 5 };
+            Console.WriteLine("Starting asynchronous operations...\n");
 
-            EventHandlers handlers = new EventHandlers();
-
-            counter.ThresholdReached += handlers.Alert;
-            counter.ThresholdReached += handlers.Log;
-
-            int c=0;
-            while(true)
+            try
             {
-                Console.Write("press Enter:");
-                Console.ReadLine();
-                counter.Increment();
-                c+=1;
-                if(c==5){
-                    Console.WriteLine("\nUnsubscribing the Log handler...\n");
-                    counter.ThresholdReached -= handlers.Log;
-                }
                 
+                List<Task<string>> tasks = new List<Task<string>>
+                {
+                    FetchDataFromTask("Task 1", 2000),
+                    FetchDataFromTask("Task 2", 1000),
+                    FetchDataFromTask("Task 3", 3000),
+                    FetchDataFromTaskWithError("Task 4", 1500)
+                };
+
+                
+                var results = await Task.WhenAll(tasks);
+
+                
+                Console.WriteLine("\nAll tasks completed. Results:");
+                foreach (var result in results)
+                {
+                    Console.WriteLine(result);
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nException occurred: {ex.Message}");
+            }
+        }
+
+        static async Task<string> FetchDataFromTask(string taskName, int delay)
+        {
+            Console.WriteLine($"{taskName}: Fetching data...");
+            await Task.Delay(delay); 
+            return $"{taskName}: Data fetched after {delay}ms";
+        }
+
+        static async Task<string> FetchDataFromTaskWithError(string taskName, int delay)
+        {
+            Console.WriteLine($"{taskName}: Fetching data...");
+            await Task.Delay(delay); 
+            throw new InvalidOperationException($"{taskName}: Failed to fetch data");
         }
     }
 }
