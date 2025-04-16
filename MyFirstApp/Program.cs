@@ -1,46 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace Task4
+namespace Task6
 {
-    class Student
+    public delegate void ThresholdReachedEventHandler(int value);
+    public class Counter
     {
-        public string Name { get; set; }
-        private int _age;
-        private string _grade;
+        private int _count; 
+        public int Threshold { get; set; } 
 
-        public int Age
+        public event ThresholdReachedEventHandler ThresholdReached;
+
+        public void Increment()
         {
-            get { return _age; }
-            set
+            _count++;
+            Console.WriteLine($"Counter: {_count}");
+
+            if (_count >= Threshold)
             {
-                if (value < 0)
-                {
-                    throw new ArgumentException("Age cannot be negative.");
-                }
-                _age = value;
+                ThresholdReached?.Invoke(_count);
             }
         }
-        public string Grade
+    }
+
+ 
+    public class EventHandlers
+    {
+        public void Alert(int value)
         {
-            get { return _grade; }
-            set
-            {
-                HashSet<string> validGrades = new HashSet<string> { "A", "B", "C", "D", "E", "F" };
-                if (!validGrades.Contains(value))
-                {
-                    throw new ArgumentException("Invalid grade.");
-                }
-                _grade = value;
-            }
+            Console.WriteLine($"Alert! Threshold of {value} reached.");
         }
 
-        public Student(string name, int age, string grade)
+        public void Log(int value)
         {
-            Name = name;
-            Age = age;
-            Grade = grade;
+            Console.WriteLine($"Logging: Threshold {value} reached.");
         }
     }
 
@@ -48,55 +40,25 @@ namespace Task4
     {
         static void Main(string[] args)
         {
-            List<Student> students = new List<Student>();
+            Counter counter = new Counter { Threshold = 5 };
 
-            try
+            EventHandlers handlers = new EventHandlers();
+
+            counter.ThresholdReached += handlers.Alert;
+            counter.ThresholdReached += handlers.Log;
+
+            int c=0;
+            while(true)
             {
-                students.Add(new Student("Alice", 20, "A"));
-                students.Add(new Student("Bob", 19, "B"));
-                students.Add(new Student("Charlie", 22, "C"));
-                students.Add(new Student("David", 21, "D"));
-                students.Add(new Student("Eve", 23, "E"));
-                students.Add(new Student("Frank", 24, "F"));
-
-                Console.Write("Enter Grade threshold:");
-                string threshold = Console.ReadLine();
-                if (!new HashSet<string> { "A", "B", "C", "D", "E", "F" }.Contains(threshold))
-                {
-                    throw new ArgumentException("Invalid grade threshold.");
+                Console.Write("press Enter:");
+                Console.ReadLine();
+                counter.Increment();
+                c+=1;
+                if(c==5){
+                    Console.WriteLine("\nUnsubscribing the Log handler...\n");
+                    counter.ThresholdReached -= handlers.Log;
                 }
-
-                Console.Write("Enter Sort Choice 1.By name, 2.By Grade (1/2):");
-                string sortChoice = Console.ReadLine();
-
-                IEnumerable<Student> filteredStudents;
-
-                if (sortChoice == "1")
-                {
-                    filteredStudents = students
-                        .Where(s => string.Compare(s.Grade, threshold) <= 0)
-                        .OrderBy(s => s.Name);
-                }
-                else if (sortChoice == "2")
-                {
-                    filteredStudents = students
-                        .Where(s => string.Compare(s.Grade, threshold) <= 0)
-                        .OrderBy(s => s.Grade);
-                }
-                else
-                {
-                    throw new ArgumentException("Invalid choice.");
-                }
-
-                Console.WriteLine("Filtered Students:");
-                foreach (var student in filteredStudents)
-                {
-                    Console.WriteLine($"{student.Name}, {student.Age}, {student.Grade}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
+                
             }
         }
     }
