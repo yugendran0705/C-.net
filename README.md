@@ -1,6 +1,5 @@
 # C# & .net
 
-# Generics and Interfaces with a Repository Pattern
+# Reflection and Custom Attributes
 
 ![alt text](image.png)
-![alt text](image-1.png)
